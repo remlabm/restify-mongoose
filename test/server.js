@@ -15,7 +15,7 @@ module.exports = function(options, routes) {
   });
 
   server.use(restify.acceptParser(server.acceptable));
-  server.use(restify.queryParser());
+  server.use(restify.queryParser({ mapParams: false }));
   server.use(restify.bodyParser());
 
   var notes = restifyMongoose(Note, options);

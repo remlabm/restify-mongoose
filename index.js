@@ -1,6 +1,7 @@
 'use strict';
 var async = require('async');
 var restify = require('restify');
+var _ = require('lodash');
 var util = require('util');
 var url = require('url');
 var EventEmitter = require('events').EventEmitter;
@@ -221,8 +222,8 @@ Resource.prototype.query = function (options) {
   options.populate = options.populate || this.options.populate;
 
   return function (req, res, next) {
-    var query = self.Model.find({});
-    var countQuery = self.Model.find({});
+    var query = self.Model.find( req.params || {});
+    var countQuery = self.Model.find(req.params || {});
     var populate = req.query.populate || options.populate;
 
     if (req.query.q) {
@@ -284,6 +285,7 @@ Resource.prototype.detail = function (options) {
   return function (req, res, next) {
     var find = {};
     find[self.options.queryString] = req.params.id;
+    _.merge( find, _.filter( req.params, 'id'));
 
     var query = self.Model.findOne(find);
 
@@ -338,6 +340,7 @@ Resource.prototype.update = function (options) {
   return function (req, res, next) {
     var find = {};
     find[self.options.queryString] = req.params.id;
+    _.merge( find, _.filter( req.params, 'id'));
 
     var query = self.Model.findOne(find);
 
@@ -378,6 +381,7 @@ Resource.prototype.remove = function () {
   return function (req, res, next) {
     var find = {};
     find[self.options.queryString] = req.params.id;
+    _.merge( find, _.filter( req.params, 'id'));
 
     var query = self.Model.findOne(find);
 
